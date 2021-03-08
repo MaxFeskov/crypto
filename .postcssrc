@@ -1,0 +1,9 @@
+{
+  "plugins": {
+    "postcss-flexbugs-fixes": true,
+    "postcss-animation": true,
+    "autoprefixer": {
+      "grid": "autoplace"
+    }
+  }
+}
