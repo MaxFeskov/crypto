@@ -12,6 +12,7 @@
   "extends": [
     "airbnb",
     "airbnb/hooks",
+    "prettier",
     "plugin:security/recommended",
     "plugin:import/errors",
     "plugin:import/warnings"
