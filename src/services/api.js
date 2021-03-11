@@ -4,7 +4,6 @@ import WS from '../classes/WS';
 
 const apiKey = 'bf2d7e9edf9f06d61da703995815d02eab947de80859a50706911c96b37f72ce';
 const AGGREGATE_INDEX = '5';
-const CURRENCY = 'USD';
 
 const axiosInstance = axios.create({
   baseURL: 'https://min-api.cryptocompare.com/data',
@@ -19,21 +18,21 @@ const ws = new WS(`${'wss://streamer.cryptocompare.com/v2?api_key='}${apiKey}`, 
   }
 });
 
-function addCoinToWatch(coinSymbol, cb) {
-  subscribers.set(coinSymbol, cb);
+function addCoinToWatch({ symbol, currency }, cb) {
+  subscribers.set(symbol, cb);
 
   ws.send({
     action: 'SubAdd',
-    subs: [`${AGGREGATE_INDEX}~CCCAGG~${coinSymbol}~${CURRENCY}`],
+    subs: [`${AGGREGATE_INDEX}~CCCAGG~${symbol}~${currency}`],
   });
 }
 
-function removeCoinFromWatch(coinSymbol) {
-  subscribers.delete(coinSymbol);
+function removeCoinFromWatch({ symbol, currency }) {
+  subscribers.delete(symbol);
 
   ws.send({
     action: 'SubRemove',
-    subs: [`${AGGREGATE_INDEX}~CCCAGG~${coinSymbol}~${CURRENCY}`],
+    subs: [`${AGGREGATE_INDEX}~CCCAGG~${symbol}~${currency}`],
   });
 }
 
@@ -55,7 +54,7 @@ async function getAvailableCoins() {
 }
 
 function subscribeToUpdateCoin(coin, cb) {
-  addCoinToWatch(coin.symbol, cb);
+  addCoinToWatch(coin, cb);
 }
 
 function subscribeToUpdateCoinList(coinList, cb) {
@@ -63,7 +62,7 @@ function subscribeToUpdateCoinList(coinList, cb) {
 }
 
 function unsubscribeToUpdateCoin(coin) {
-  removeCoinFromWatch(coin.symbol);
+  removeCoinFromWatch(coin);
 }
 
 function unsubscribeToUpdateCoinList(coinList) {
