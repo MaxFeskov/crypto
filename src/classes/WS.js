@@ -1,8 +1,8 @@
 class WS {
-  constructor(url, cb) {
+  constructor(url) {
     this.url = url;
-    this.cb = cb;
     this.afterOpenCb = [];
+    this.subscriberList = [];
 
     this.open();
   }
@@ -22,23 +22,45 @@ class WS {
         }
       });
     }
+
+    return this;
   }
 
   close() {
     this.ws.close();
+
+    return this;
   }
 
   send(msg) {
-    if (!msg) return;
+    if (msg) {
+      if (!this.ws) this.open();
 
-    if (!this.ws) this.open();
-
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.sendMessage(msg);
-    } else {
-      this.afterOpenCb.push(msg);
-      this.ws.open();
+      if (this.ws.readyState === WebSocket.OPEN) {
+        this.sendMessage(msg);
+      } else {
+        this.afterOpenCb.push(msg);
+        this.ws.open();
+      }
     }
+
+    return this;
+  }
+
+  subscribe(cb) {
+    if (typeof cb === 'function') {
+      this.subscriberList.push(cb);
+    }
+
+    return this;
+  }
+
+  unsubscribe(cb) {
+    if (typeof cb === 'function') {
+      this.subscriberList = this.subscriberList.filter((item) => item !== cb);
+    }
+
+    return this;
   }
 
   sendMessage(msg) {
@@ -46,9 +68,8 @@ class WS {
   }
 
   onGetMessage(data) {
-    if (typeof this.cb === 'function') {
-      this.cb(JSON.parse(data));
-    }
+    const msg = JSON.parse(data);
+    this.subscriberList.forEach((subscriber) => subscriber(msg));
   }
 }
 
