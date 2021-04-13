@@ -1,9 +1,11 @@
 import React from 'react';
 
 import cleanIcon from '../../images/icons/clean.svg';
+import Hr from '../Hr/Hr';
 
-function CryptoItemDiagram() {
-  return (
+const CryptoItemDiagram = () => (
+  <>
+    <Hr />
     <section className="relative">
       <h3 className="text-lg leading-6 font-medium text-gray-900 my-8">VUE - USD</h3>
       <div className="flex items-end border-gray-600 border-b border-l h-64">
@@ -16,7 +18,7 @@ function CryptoItemDiagram() {
         <img src={cleanIcon} alt="Очистить" width="30" height="30" />
       </button>
     </section>
-  );
-}
+  </>
+);
 
 export default CryptoItemDiagram;
