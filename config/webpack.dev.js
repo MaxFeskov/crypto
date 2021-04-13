@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const paths = require('./paths.js');
 const common = require('./webpack.common.js');
 
@@ -12,7 +13,7 @@ module.exports = merge(common, {
     contentBase: paths.build,
     open: true,
     compress: true,
-    hot: true,
+    hot: false,
     port: 8080,
   },
   module: {
@@ -41,5 +42,5 @@ module.exports = merge(common, {
       },
     ],
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [new webpack.HotModuleReplacementPlugin(), new ESLintPlugin()],
 });
