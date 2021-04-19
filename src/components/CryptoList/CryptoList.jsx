@@ -9,16 +9,16 @@ const CryptoList = () => {
   const coins = useSelector((state) => state.coins);
   const dispatch = useDispatch();
 
-  const deleteCoinHandler = (coin) => {
-    dispatch(deleteCoin(coin));
+  const deleteCoinHandler = (symbol, currency) => {
+    dispatch(deleteCoin(symbol, currency));
   };
 
   return (
     <>
       {coins.length ? <Hr /> : null}
       <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-        {coins.map((coin) => (
-          <CryptoItem coin={coin} onDelete={deleteCoinHandler} key={coin.symbol} />
+        {Array.from(coins).map(([id, price]) => (
+          <CryptoItem cid={id} price={price} onDelete={deleteCoinHandler} key={id} />
         ))}
       </dl>
     </>

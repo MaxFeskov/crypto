@@ -3,13 +3,15 @@ const DELETE_COIN = 'DELETE_COIN';
 const UPDATE_COIN = 'UPDATE_COIN';
 const DEFAULT_CURRENCY = 'USD';
 
-const initialState = [];
+const initialState = new Map();
 
-export const addCoin = (coinSymbol) => async (dispatch, getState, api) => {
+const roundPrice = (price) => Number(price > 1 ? price.toFixed(2) : price.toPrecision(4));
+
+export const addCoin = (symbol, currency = DEFAULT_CURRENCY) => async (dispatch, getState, api) => {
   const availableCoins = await api.getAvailableCoins();
 
-  if (availableCoins.includes(coinSymbol)) {
-    const coin = { symbol: coinSymbol, currency: DEFAULT_CURRENCY, price: 0 };
+  if (availableCoins.includes(symbol)) {
+    const coin = { symbol, currency, price: 0 };
 
     api.subscribeToUpdateCoin(coin, (price) => {
       dispatch({ type: UPDATE_COIN, payload: { ...coin, price } });
@@ -19,29 +21,36 @@ export const addCoin = (coinSymbol) => async (dispatch, getState, api) => {
   }
 };
 
-export const deleteCoin = (coin) => async (dispatch, getState, api) => {
-  api.unsubscribeToUpdateCoin(coin);
+export const deleteCoin = (symbol, currency) => async (dispatch, getState, api) => {
+  api.unsubscribeToUpdateCoin({ symbol, currency });
 
-  dispatch({ type: DELETE_COIN, payload: coin });
+  dispatch({ type: DELETE_COIN, payload: { symbol, currency } });
 };
 
 export default function coins(state = initialState, { type, payload }) {
   if (type === ADD_COIN) {
-    if (state.some((item) => item.symbol === payload.symbol)) throw new Error('Coin already added');
+    const { symbol, currency } = payload;
+    const id = `${symbol}:${currency}`;
+    const price = roundPrice(payload.price);
 
-    return [...state, payload];
+    if (state.get(id)) throw new Error(`Coin ${id} already added`);
+
+    return new Map(state.set(id, price));
   }
 
   if (type === UPDATE_COIN) {
-    const newState = state.slice(0);
-    const index = state.findIndex((item) => item.symbol === payload.symbol);
-    newState.splice(index, 1, payload);
+    const { symbol, currency } = payload;
+    const id = `${symbol}:${currency}`;
+    const price = roundPrice(payload.price);
 
-    return newState;
+    if (state.get(id) !== price) return new Map(state.set(id, price));
   }
 
   if (type === DELETE_COIN) {
-    return state.filter((coin) => coin.symbol !== payload.symbol);
+    const { symbol, currency } = payload;
+    const id = `${symbol}:${currency}`;
+
+    if (state.delete(id)) return new Map(state);
   }
 
   return state;
