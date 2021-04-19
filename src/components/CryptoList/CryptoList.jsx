@@ -1,26 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteCoin } from '../../reducers/coins';
 
 import CryptoItem from '../CryptoItem/CryptoItem';
+import CryptoItemDiagram from '../CryptoItemDiagram/CryptoItemDiagram';
 import Hr from '../Hr/Hr';
+import SearchForm from '../SearchForm/SearchForm';
 
 const CryptoList = () => {
+  const [selectedCoin, setSelectedCoin] = useState('');
   const coins = useSelector((state) => state.coins);
   const dispatch = useDispatch();
 
-  const deleteCoinHandler = (symbol, currency) => {
+  const deleteCoinHandler = (cid) => {
+    if (cid === selectedCoin) setSelectedCoin('');
+
+    const [symbol, currency] = cid.split(':');
     dispatch(deleteCoin(symbol, currency));
+  };
+
+  const itemSelelctHandler = (cid) => {
+    setSelectedCoin(cid);
   };
 
   return (
     <>
+      <SearchForm />
+
       {coins.length ? <Hr /> : null}
-      <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
         {Array.from(coins).map(([id, price]) => (
-          <CryptoItem cid={id} price={price} onDelete={deleteCoinHandler} key={id} />
+          <CryptoItem
+            cid={id}
+            price={price}
+            isSelected={Boolean(id === selectedCoin)}
+            onSelect={itemSelelctHandler}
+            onDelete={deleteCoinHandler}
+            key={id}
+          />
         ))}
-      </dl>
+      </div>
+
+      <CryptoItemDiagram cid={selectedCoin} />
     </>
   );
 };

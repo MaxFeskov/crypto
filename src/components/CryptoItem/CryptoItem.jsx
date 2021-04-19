@@ -5,11 +5,25 @@ import deleteIcon from '../../images/icons/delete.svg';
 
 const printPrice = (price) => (!Number(price) ? '-' : price);
 
-const CryptoItem = ({ cid, price, onDelete }) => {
+const CryptoItem = ({ cid, price, isSelected, onDelete, onSelect }) => {
   const [symbol, currency] = cid.split(':');
+  const selectedClass = isSelected ? ' border-4' : '';
+
+  const handlerOnSelect = () => {
+    onSelect(cid);
+  };
+
+  const handlerOnDelete = (event) => {
+    event.stopPropagation();
+    onDelete(cid);
+  };
 
   return (
-    <div className="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer">
+    <div
+      onClick={handlerOnSelect}
+      aria-hidden="true"
+      className={`bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer ${selectedClass}`}
+    >
       <div className="px-4 py-5 sm:p-6 text-center">
         <dt className="text-sm font-medium text-gray-500 truncate">
           {symbol} - {currency}
@@ -18,7 +32,7 @@ const CryptoItem = ({ cid, price, onDelete }) => {
       </div>
       <div className="w-full border-t border-gray-200" />
       <button
-        onClick={() => onDelete(symbol, currency)}
+        onClick={handlerOnDelete}
         type="button"
         className="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
       >
@@ -32,7 +46,9 @@ const CryptoItem = ({ cid, price, onDelete }) => {
 CryptoItem.propTypes = {
   cid: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
+  isSelected: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
 };
 
 export default CryptoItem;
