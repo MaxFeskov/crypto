@@ -12,7 +12,7 @@ export default function globalErrors(state = initialState, { type, payload }) {
   if (type === ADD_GLOBAL_ERROR) {
     const { size } = state;
 
-    if (size < MAX_ERRORS_COUNT && state.add(payload).size === size) return new Set(state);
+    if (size < MAX_ERRORS_COUNT && state.add(payload).size !== size) return new Set(state);
   }
 
   if (type === DELETE_GLOBAL_ERROR) {

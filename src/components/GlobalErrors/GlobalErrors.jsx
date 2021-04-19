@@ -13,7 +13,11 @@ function GlobalErrors() {
     const errrorHandler = (event) => {
       event.preventDefault();
 
-      dispatch(addGlobalError(event.reason.message));
+      const message = event.reason?.message;
+
+      if (message) {
+        dispatch(addGlobalError(message));
+      }
     };
 
     window.addEventListener('unhandledrejection', errrorHandler);
@@ -25,9 +29,12 @@ function GlobalErrors() {
 
   useEffect(() => {
     messageList.forEach((message) => {
-      dispatch(deleteGlobalError(message));
-
-      toast(message);
+      toast(message, {
+        onClose: () => {
+          // нужно сделать синхронизацию с анимацией скрытия ошибки
+          dispatch(deleteGlobalError(message));
+        },
+      });
     });
   }, [messageList, dispatch]);
 
