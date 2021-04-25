@@ -1,11 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { SyntheticEvent } from 'react';
 
 import deleteIcon from '../../images/icons/delete.svg';
 
-const printPrice = (price) => (!Number(price) ? '-' : price);
+const printPrice = (price?: number) => (!Number(price) ? '-' : price);
 
-const CryptoItem = ({ cid, price, isSelected, onDelete, onSelect }) => {
+interface CryptoItemProps {
+  cid: string;
+  price: number;
+  isSelected: boolean;
+  onDelete: (cid: string) => void;
+  onSelect: (cid: string) => void;
+}
+
+const CryptoItem = ({ cid, price, isSelected, onDelete, onSelect }: CryptoItemProps) => {
   const [symbol, currency] = cid.split(':');
   const selectedClass = isSelected ? ' border-4' : '';
 
@@ -13,7 +20,7 @@ const CryptoItem = ({ cid, price, isSelected, onDelete, onSelect }) => {
     onSelect(cid);
   };
 
-  const handlerOnDelete = (event) => {
+  const handlerOnDelete = (event: SyntheticEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
     onDelete(cid);
   };
@@ -41,14 +48,6 @@ const CryptoItem = ({ cid, price, isSelected, onDelete, onSelect }) => {
       </button>
     </div>
   );
-};
-
-CryptoItem.propTypes = {
-  cid: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  isSelected: PropTypes.bool.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
 };
 
 export default CryptoItem;

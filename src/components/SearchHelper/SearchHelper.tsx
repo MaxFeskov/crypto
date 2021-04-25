@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { searchCoins } from '../../services/api';
+import { AvailableCoinSymbols, searchCoins } from '../../services/api';
 import SearchHelperItem from '../SearchHelperItem/SearchHelperItem';
 
-const SearchHelper = ({ searchString, onClick }) => {
-  const [searchHelpers, setSearchHelpers] = useState([]);
+interface SearchHelperProps {
+  searchString: string;
+  onClick: (helper: string) => void;
+}
+
+const SearchHelper = ({ searchString, onClick }: SearchHelperProps) => {
+  const [searchHelpers, setSearchHelpers] = useState<AvailableCoinSymbols>([]);
 
   useEffect(() => {
     if (searchString.length > 2) {
@@ -27,11 +31,6 @@ const SearchHelper = ({ searchString, onClick }) => {
       ) : null}
     </>
   );
-};
-
-SearchHelper.propTypes = {
-  searchString: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
 };
 
 export default SearchHelper;

@@ -4,13 +4,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { addGlobalError, deleteGlobalError } from '../../reducers/globalErrors';
+import { RootState } from '../../store';
 
 function GlobalErrors() {
-  const messageList = useSelector((store) => store.globalErrors);
+  const messageList = useSelector((store: RootState) => store.globalErrors);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const errrorHandler = (event) => {
+    const errrorHandler = (event: PromiseRejectionEvent) => {
       event.preventDefault();
 
       const message = event.reason?.message;

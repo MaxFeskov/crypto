@@ -1,8 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { SyntheticEvent } from 'react';
 
-const SearchHelperItem = ({ helper, onClick }) => {
-  const onClickHandler = (event) => {
+interface SearchHelperItemProps {
+  helper: string;
+  onClick: (helper: string) => void;
+}
+
+const SearchHelperItem = ({ helper, onClick }: SearchHelperItemProps) => {
+  const onClickHandler = (event: SyntheticEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     onClick(helper);
   };
@@ -16,11 +20,6 @@ const SearchHelperItem = ({ helper, onClick }) => {
       {helper}
     </button>
   );
-};
-
-SearchHelperItem.propTypes = {
-  helper: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
 };
 
 export default SearchHelperItem;

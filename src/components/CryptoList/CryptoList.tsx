@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteCoin } from '../../reducers/coins';
+import { RootState } from '../../store';
 
 import CryptoItem from '../CryptoItem/CryptoItem';
 import CryptoItemDiagram from '../CryptoItemDiagram/CryptoItemDiagram';
 import Hr from '../Hr/Hr';
 import SearchForm from '../SearchForm/SearchForm';
 
-const CryptoList = () => {
+const CryptoList: React.FC = () => {
   const [selectedCoin, setSelectedCoin] = useState('');
-  const coins = useSelector((state) => state.coins);
+  const coins = useSelector((state: RootState) => state.coins);
   const dispatch = useDispatch();
 
-  const deleteCoinHandler = (cid) => {
+  const deleteCoinHandler = (cid: string) => {
     if (cid === selectedCoin) setSelectedCoin('');
 
     const [symbol, currency] = cid.split(':');
-    dispatch(deleteCoin(symbol, currency));
+    dispatch(deleteCoin({ symbol, currency }));
   };
 
-  const itemSelelctHandler = (cid) => {
+  const itemSelelctHandler = (cid: string) => {
     setSelectedCoin(cid);
   };
 
@@ -27,7 +28,7 @@ const CryptoList = () => {
     <>
       <SearchForm />
 
-      {coins.length ? <Hr /> : null}
+      {coins.size ? <Hr /> : null}
       <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
         {Array.from(coins).map(([id, price]) => (
           <CryptoItem
@@ -41,7 +42,7 @@ const CryptoList = () => {
         ))}
       </div>
 
-      <CryptoItemDiagram cid={selectedCoin} />
+      {selectedCoin ? <CryptoItemDiagram cid={selectedCoin} /> : null}
     </>
   );
 };

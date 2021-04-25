@@ -1,24 +1,30 @@
-import { useCallback, useEffect, useState } from 'react';
+import { RefObject, useCallback, useEffect, useState } from 'react';
 import useEventListener from './use-event-listener';
 
-function useElementSize(node) {
-  const [size, setSize] = useState({
+interface Size {
+  width: number;
+  height: number;
+}
+
+function useElementSize<T extends HTMLElement = HTMLDivElement>(elementRef: RefObject<T>) {
+  const [size, setSize] = useState<Size>({
     width: 0,
     height: 0,
   });
 
   const updateSize = useCallback(() => {
+    const node = elementRef?.current;
+
     if (node) {
       const { width, height } = node.getBoundingClientRect();
 
       setSize({ width, height });
     }
-  }, [node]);
+  }, [elementRef]);
 
   useEffect(() => {
     updateSize();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [node]);
+  }, [updateSize]);
 
   useEventListener('resize', updateSize);
 

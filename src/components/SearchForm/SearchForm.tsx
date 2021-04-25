@@ -1,33 +1,49 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useRef, useState } from 'react';
+import React, { RefObject, SyntheticEvent, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addCoin } from '../../reducers/coins';
+import { addCoin, Coin } from '../../reducers/coins';
 
 import addIcon from '../../images/icons/add.svg';
 import SearchHelper from '../SearchHelper/SearchHelper';
 
+const DEFAULT_CURRENCY = 'USD';
+
 const SearchForm = () => {
-  const coinInpitRef = useRef();
+  const coinInpitRef: RefObject<HTMLInputElement> = useRef(null);
   const dispatch = useDispatch();
   const [searchString, setSearchString] = useState('');
 
-  const onAddCount = (coinSymbol) => {
-    dispatch(addCoin(coinSymbol));
+  const onAddCount = (coin: Coin) => {
+    dispatch(addCoin(coin));
   };
 
-  const onAddCoinHandler = (event) => {
+  const onAddCoinHandler = (
+    event: SyntheticEvent<HTMLFormElement> | SyntheticEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     event.preventDefault();
-    onAddCount(coinInpitRef.current.value);
-    coinInpitRef.current.value = '';
-    setSearchString('');
+
+    if (coinInpitRef.current) {
+      onAddCount({
+        symbol: coinInpitRef.current.value,
+        currency: DEFAULT_CURRENCY,
+      });
+
+      coinInpitRef.current.value = '';
+      setSearchString('');
+    }
   };
 
   const onChangeSearchStateHandler = () => {
-    setSearchString(coinInpitRef.current.value);
+    if (coinInpitRef.current) {
+      setSearchString(coinInpitRef.current.value);
+    }
   };
 
-  const onHelperClickHandler = (helper) => {
-    onAddCount(helper);
+  const onHelperClickHandler = (helper: string) => {
+    onAddCount({
+      symbol: helper,
+      currency: DEFAULT_CURRENCY,
+    });
   };
 
   return (

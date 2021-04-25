@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const paths = require('./paths');
 
 module.exports = {
-  entry: `${paths.src}/index.jsx`,
+  entry: `${paths.src}/index.tsx`,
   target: 'browserslist',
   output: {
     path: paths.build,
@@ -13,7 +13,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title: 'webpack Boilerplate',
+      title: 'Криптономикон',
       favicon: `${paths.src}/images/favicon.png`,
       template: `${paths.src}/index.html`,
       filename: 'index.html',
@@ -27,6 +27,11 @@ module.exports = {
         use: ['babel-loader'],
       },
       {
+        test: /\.(ts|tsx)$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
         test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
         type: 'asset/resource',
       },
@@ -37,6 +42,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
 };

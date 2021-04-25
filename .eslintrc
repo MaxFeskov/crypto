@@ -1,8 +1,12 @@
 {
   "root": true,
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.eslint.json",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "env": {
     "browser": true,
@@ -10,7 +14,7 @@
     "node": true
   },
   "extends": [
-    "airbnb",
+    "airbnb-typescript",
     "airbnb/hooks",
     "prettier",
     "plugin:security/recommended",
@@ -21,6 +25,7 @@
   "rules": {
     "prettier/prettier": ["error"],
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "consistent-return": "off",
     "react/jsx-one-expression-per-line": "off"
   }
 }
