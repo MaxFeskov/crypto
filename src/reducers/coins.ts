@@ -5,10 +5,6 @@ import {
   unsubscribeToUpdateCoin,
 } from '../services/api';
 
-const COIN_ADD = 'COIN_ADD';
-const COIN_DELETE = 'COIN_DELETE';
-const COIN_UPDATE = 'COIN_UPDATE';
-
 export interface Coin {
   symbol: string;
   currency: string;
@@ -19,9 +15,9 @@ interface CoinWithPrice extends Coin {
 }
 
 type ActionType =
-  | { type: typeof COIN_ADD; payload: CoinWithPrice }
-  | { type: typeof COIN_UPDATE; payload: CoinWithPrice }
-  | { type: typeof COIN_DELETE; payload: Coin };
+  | { type: 'COIN_ADD'; payload: CoinWithPrice }
+  | { type: 'COIN_UPDATE'; payload: CoinWithPrice }
+  | { type: 'COIN_DELETE'; payload: Coin };
 
 const initialState = new Map<string, number>();
 
@@ -37,10 +33,10 @@ export const addCoin = (coin: Coin) => async (dispatch: Dispatch<ActionType>) =>
       const newCoin = { symbol, currency, price: 0 };
 
       subscribeToUpdateCoin(newCoin, (price: number) => {
-        dispatch({ type: COIN_UPDATE, payload: { ...newCoin, price } });
+        dispatch({ type: 'COIN_UPDATE', payload: { ...newCoin, price } });
       });
 
-      dispatch({ type: COIN_ADD, payload: newCoin });
+      dispatch({ type: 'COIN_ADD', payload: newCoin });
     }
   }
 };
@@ -51,12 +47,12 @@ export const deleteCoin = (coin: Coin) => async (dispatch: Dispatch<ActionType>)
   if (symbol && currency) {
     unsubscribeToUpdateCoin({ symbol, currency });
 
-    dispatch({ type: COIN_DELETE, payload: { symbol, currency } });
+    dispatch({ type: 'COIN_DELETE', payload: { symbol, currency } });
   }
 };
 
 export default function coins(state = initialState, action: ActionType) {
-  if (action.type === COIN_ADD) {
+  if (action.type === 'COIN_ADD') {
     const { symbol, currency } = action.payload;
     const id = `${symbol}:${currency}`;
     const price = roundPrice(action.payload.price);
@@ -64,7 +60,7 @@ export default function coins(state = initialState, action: ActionType) {
     if (!state.get(id)) return new Map(state.set(id, price));
   }
 
-  if (action.type === COIN_UPDATE) {
+  if (action.type === 'COIN_UPDATE') {
     const { symbol, currency } = action.payload;
     const id = `${symbol}:${currency}`;
     const price = roundPrice(action.payload.price);
@@ -72,7 +68,7 @@ export default function coins(state = initialState, action: ActionType) {
     if (state.get(id) !== price) return new Map(state.set(id, price));
   }
 
-  if (action.type === COIN_DELETE) {
+  if (action.type === 'COIN_DELETE') {
     const { symbol, currency } = action.payload;
     const id = `${symbol}:${currency}`;
 
